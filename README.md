@@ -1,5 +1,5 @@
 # HeapCrypt
-Encypting the Heap while sleeping by hooking and modifying Sleep with our own sleep that encrypts the heap
+Encypting the Heap while sleeping by hooking and modifying Sleep with our own function that encrypts the heap , sleeps for a moment then decrypts the heap :
 
 #### 16bit key xor heap encryption :
 ![Heap2](https://user-images.githubusercontent.com/123980007/227698020-aa5c5987-af58-4e83-a8c0-1f8dbd0f1dba.png)
